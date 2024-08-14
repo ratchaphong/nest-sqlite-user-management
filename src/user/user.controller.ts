@@ -27,8 +27,9 @@ import { UserResponseDTO } from 'src/auth/dto/user-response.dto';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
 import { AdminAuthGuard } from 'src/guards/admin-auth.guard';
 import { UpdateUserByAdminDTO } from './dto/update-user-by-admin.dto';
+import { UserWithHistoriesResponseDTO } from 'src/auth/dto/ีuser-with-histories-response.dto';
 
-@ApiExtraModels(UserResponseDTO) // ทำให้ Swagger รู้จัก UserResponseDTO
+@ApiExtraModels(UserResponseDTO, UserWithHistoriesResponseDTO)
 @ApiTags('user')
 @Controller('user')
 export class UserController {
@@ -69,23 +70,23 @@ export class UserController {
   // @ApiResponse({
   //   status: 200,
   //   description: 'The user has been successfully retrieved.',
-  //   type: UserResponseDTO,
+  //   type: UserWithHistoriesResponseDTO,
   // })
   @ApiOkResponse({
     description: 'The user has been successfully retrieved.',
     schema: {
       properties: {
         status: { type: 'number', example: HttpStatus.OK },
-        data: { $ref: getSchemaPath(UserResponseDTO) },
+        data: { $ref: getSchemaPath(UserWithHistoriesResponseDTO) },
       },
     },
   })
   @ApiNotFoundResponse({ description: 'User not found.' })
   async getUser(
     @Param('id', ParseIntPipe) id: number,
-  ): Promise<UserResponseDTO> {
-    const user = await this.userService.findUserById(id);
-    return new UserResponseDTO(user);
+  ): Promise<UserWithHistoriesResponseDTO> {
+    const user = await this.userService.getUserProfile(id);
+    return new UserWithHistoriesResponseDTO(user);
   }
 
   @UseGuards(AdminAuthGuard)
