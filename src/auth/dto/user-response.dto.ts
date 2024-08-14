@@ -1,12 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-  password: string; // Include password if it's still necessary for the context before filtering it out in DTO
-  isAdmin: boolean;
-}
+import { User } from '@prisma/client';
 
 export class UserResponseDTO {
   @ApiProperty({

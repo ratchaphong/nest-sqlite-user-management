@@ -25,15 +25,21 @@ import {
 } from '@nestjs/swagger';
 import { RegisterDTO } from './dto/register.dto';
 import { LoginDTO } from './dto/login.dto';
-import { User, UserResponseDTO } from './dto/user-response.dto';
+import { UserResponseDTO } from './dto/user-response.dto';
 import { LoggedUserResponseDTO } from './dto/logged-user-response.dto';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
-import { UserSession } from './dto/user-session.dto';
+import { UserSession } from '../interface/user-session';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { LoginAuthGuard } from 'src/guards/login-auth.guard';
+import { User } from '@prisma/client';
+import { UserWithHistoriesResponseDTO } from './dto/ีuser-with-histories-response.dto';
 
-@ApiExtraModels(UserResponseDTO, LoggedUserResponseDTO)
+@ApiExtraModels(
+  UserResponseDTO,
+  LoggedUserResponseDTO,
+  UserWithHistoriesResponseDTO,
+)
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
@@ -120,20 +126,24 @@ export class AuthController {
   // @ApiResponse({
   //   status: 200,
   //   description: 'Profile retrieved successfully',
-  //   type: UserResponseDTO,
+  //   type: UserWithHistoriesResponseDTO,
   // })
   @ApiOkResponse({
     description: 'Profile retrieved successfully',
     schema: {
       properties: {
         status: { type: 'number', example: HttpStatus.OK },
-        data: { $ref: getSchemaPath(UserResponseDTO) },
+        data: { $ref: getSchemaPath(UserWithHistoriesResponseDTO) },
       },
     },
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
-  async getProfile(@CurrentUser() curr: User): Promise<UserResponseDTO> {
-    return new UserResponseDTO(curr);
+  async getProfile(
+    @CurrentUser() curr: User,
+  ): Promise<UserWithHistoriesResponseDTO> {
+    const user = await this.authService.getProfile(curr.id);
+
+    return new UserWithHistoriesResponseDTO(user);
   }
 
   @UseGuards(JwtAuthGuard)

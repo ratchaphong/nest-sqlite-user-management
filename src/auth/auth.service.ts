@@ -5,9 +5,11 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
-import { User, UserResponseDTO } from './dto/user-response.dto';
+import { UserResponseDTO } from './dto/user-response.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UpdateUserDTO } from './dto/update-user.dto';
+import { User, History } from '@prisma/client'; // นำเข้า History จาก Prisma
+import { UserWithHistories } from 'src/interface/user-with-histories.interface';
 
 @Injectable()
 export class AuthService {
@@ -73,10 +75,32 @@ export class AuthService {
 
     return await this.prisma.user.update({
       where: { id },
+      // data: {
+      //   name: attrs.name || currentUser.name,
+      //   email: attrs.email || currentUser.email,
+      // },
       data: {
         name: attrs.name || currentUser.name,
         email: attrs.email || currentUser.email,
+        histories: {
+          create: {
+            action: `Updated name from ${currentUser.name} to ${attrs.name || currentUser.name}, email from ${currentUser.email} to ${attrs.email || currentUser.email}`,
+          },
+        },
       },
+      // include: { histories: true },
     });
+  }
+
+  async getProfile(id: number): Promise<UserWithHistories> {
+    // Promise<User & { histories: History[] }>
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      include: { histories: true }, // ดึงข้อมูล histories มาด้วย
+    });
+
+    if (!user) throw new NotFoundException('User not found.');
+
+    return user;
   }
 }
