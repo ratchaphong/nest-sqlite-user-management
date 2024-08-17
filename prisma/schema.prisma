@@ -14,18 +14,66 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
+  // id        Int           @id @default(autoincrement())
+  id        String        @id @default(uuid())
   name      String
-  email     String    @unique
+  email     String        @unique
   password  String
-  isAdmin   Boolean   @default(false)
+  isAdmin   Boolean       @default(false)
   histories History[] // ความสัมพันธ์ 1:M กับ Histories
+  policies  OrderPolicy[] // ความสัมพันธ์ 1:M กับ OrderPolicy
 }
 
 model History {
-  id        Int      @id @default(autoincrement())
+  // id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   action    String // ตัวอย่างฟิลด์สำหรับบันทึกการกระทำหรือการแก้ไข
   createdAt DateTime @default(now())
-  userId    Int // Foreign Key ที่เชื่อมโยงไปยัง User
+  userId    String // Foreign Key ที่เชื่อมโยงไปยัง User
   user      User     @relation(fields: [userId], references: [id]) // ความสัมพันธ์ M:1 กับ User
+}
+
+model OrderPolicy {
+  id                   String   @id @default(uuid())
+  userId               String
+  user                 User     @relation(fields: [userId], references: [id])
+  policyNo             String
+  productCode          String
+  engineSize           Int
+  carTankNo            String
+  vehicleBrandCode     String
+  vehicleModelCode     String
+  vehicleColorCode     String
+  licensePlateTypeCode String
+  licensePlateLetter   String?
+  licensePlateNumber   String?
+  startPolicyAt        DateTime
+  endPolicyAt          DateTime
+  currentAddressId     String
+  currentAddress       Address  @relation(name: "currentAddress", fields: [currentAddressId], references: [id])
+  idCardAddressId      String?
+  idCardAddress        Address? @relation(name: "idCardAddress", fields: [idCardAddressId], references: [id])
+}
+
+model Address {
+  id                        String        @id @default(uuid())
+  houseNo                   String
+  mooNo                     String
+  building                  String
+  soi                       String
+  roomNo                    String
+  floorNo                   String
+  street                    String
+  subDistrictCode           String
+  subDistrictNameTh         String
+  subDistrictNameEn         String?
+  districtCode              String
+  districtNameTh            String
+  districtNameEn            String?
+  provinceCode              String
+  provinceNameTh            String
+  provinceNameEn            String?
+  zipCode                   String
+  orderPolicyCurrentAddress OrderPolicy[] @relation(name: "currentAddress")
+  orderPolicyIdCardAddress  OrderPolicy[] @relation(name: "idCardAddress")
 }

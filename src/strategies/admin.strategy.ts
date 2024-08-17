@@ -14,7 +14,7 @@ export class AdminStrategy extends PassportStrategy(Strategy, 'admin') {
   }
 
   async validate(payload: {
-    sub: number; // Typically used to store the user ID
+    sub: string; // Typically used to store the user ID
     username: string;
   }) {
     console.log(payload);

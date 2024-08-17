@@ -83,7 +83,8 @@ export class UserController {
   })
   @ApiNotFoundResponse({ description: 'User not found.' })
   async getUser(
-    @Param('id', ParseIntPipe) id: number,
+    // @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
   ): Promise<UserWithHistoriesResponseDTO> {
     const user = await this.userService.getUserProfile(id);
     return new UserWithHistoriesResponseDTO(user);
@@ -109,7 +110,8 @@ export class UserController {
   })
   @ApiNotFoundResponse({ description: 'User not found.' })
   async updateUser(
-    @Param('id', ParseIntPipe) id: number,
+    // @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() updateUserByAdminDTO: UpdateUserByAdminDTO,
   ): Promise<UserResponseDTO> {
     const updatedUser = await this.userService.updateUserById(
@@ -127,8 +129,8 @@ export class UserController {
   @ApiNotFoundResponse({ description: 'User not found.' })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteUser(
-    // @Param('id') id: string
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
+    // @Param('id', ParseIntPipe) id: number,
   ): Promise<void> {
     return await this.userService.deleteUserById(id);
   }

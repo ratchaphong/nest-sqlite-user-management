@@ -3,10 +3,10 @@ import { User } from '@prisma/client';
 
 export class UserResponseDTO {
   @ApiProperty({
-    example: 1,
+    example: '1a2b3c4d-5678-9e0f-1234-56789abcdef0', // ตัวอย่าง UUID
     description: 'The unique identifier of the user',
   })
-  id: number;
+  id: string;
 
   @ApiProperty({
     example: 'John Doe',

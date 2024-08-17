@@ -53,7 +53,7 @@ export class AuthService {
     return this.jwtService.sign(payload);
   }
 
-  async findById(id: number): Promise<User> {
+  async findById(id: string): Promise<User> {
     const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) throw new NotFoundException('User not found.');
 
@@ -61,7 +61,7 @@ export class AuthService {
   }
 
   async update(
-    id: number,
+    id: string,
     attrs: UpdateUserDTO,
     currentUser: User,
   ): Promise<User> {
@@ -92,7 +92,7 @@ export class AuthService {
     });
   }
 
-  async getProfile(id: number): Promise<UserWithHistories> {
+  async getProfile(id: string): Promise<UserWithHistories> {
     // Promise<User & { histories: History[] }>
     const user = await this.prisma.user.findUnique({
       where: { id },

@@ -3,10 +3,10 @@ import { History } from '@prisma/client';
 
 export class UserHistoryDTO {
   @ApiProperty({
-    example: 1,
+    example: '1a2b3c4d-5678-9e0f-1234-56789abcdef0', // ตัวอย่าง UUID
     description: 'The unique identifier of the history record',
   })
-  id: number;
+  id: string;
 
   @ApiProperty({
     example: 'Updated email from john.old@example.com to john.doe@example.com',
