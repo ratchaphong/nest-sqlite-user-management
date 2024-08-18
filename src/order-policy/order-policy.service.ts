@@ -7,34 +7,37 @@ import { OrderPolicyWithAddresses } from 'src/interface/order-policy-with-addres
 export class OrderPolicyService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(
-    createOrderPolicyDto: CreateOrderPolicyDto,
-  ): Promise<OrderPolicyWithAddresses> {
+  async create(data: CreateOrderPolicyDto): Promise<OrderPolicyWithAddresses> {
     const orderPolicy = await this.prisma.orderPolicy.create({
       data: {
         user: {
           connect: {
-            id: createOrderPolicyDto.userId,
+            id: data.userId,
           },
         },
-        policyNo: createOrderPolicyDto.policyNo,
-        productCode: createOrderPolicyDto.productCode,
-        engineSize: createOrderPolicyDto.engineSize,
-        carTankNo: createOrderPolicyDto.carTankNo,
-        vehicleBrandCode: createOrderPolicyDto.vehicleBrandCode,
-        vehicleModelCode: createOrderPolicyDto.vehicleModelCode,
-        vehicleColorCode: createOrderPolicyDto.vehicleColorCode,
-        licensePlateTypeCode: createOrderPolicyDto.licensePlateTypeCode,
-        licensePlateLetter: createOrderPolicyDto.licensePlateLetter,
-        licensePlateNumber: createOrderPolicyDto.licensePlateNumber,
-        startPolicyAt: createOrderPolicyDto.startPolicyAt,
-        endPolicyAt: createOrderPolicyDto.endPolicyAt,
-        currentAddress: {
-          create: createOrderPolicyDto.currentAddress,
+        policyNo: data.policyNo,
+        // productCode: data.productCode,
+        product: {
+          connect: {
+            code: data.productCode,
+          },
         },
-        idCardAddress: createOrderPolicyDto.idCardAddress
+        engineSize: data.engineSize,
+        carTankNo: data.carTankNo,
+        vehicleBrandCode: data.vehicleBrandCode,
+        vehicleModelCode: data.vehicleModelCode,
+        vehicleColorCode: data.vehicleColorCode,
+        licensePlateTypeCode: data.licensePlateTypeCode,
+        licensePlateLetter: data.licensePlateLetter,
+        licensePlateNumber: data.licensePlateNumber,
+        startPolicyAt: data.startPolicyAt,
+        endPolicyAt: data.endPolicyAt,
+        currentAddress: {
+          create: data.currentAddress,
+        },
+        idCardAddress: data.idCardAddress
           ? {
-              create: createOrderPolicyDto.idCardAddress,
+              create: data.idCardAddress,
             }
           : undefined,
       },

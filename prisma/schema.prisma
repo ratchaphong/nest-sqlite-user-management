@@ -39,6 +39,7 @@ model OrderPolicy {
   user                 User     @relation(fields: [userId], references: [id])
   policyNo             String
   productCode          String
+  product              Product  @relation(fields: [productCode], references: [code])
   engineSize           Int
   carTankNo            String
   vehicleBrandCode     String
@@ -56,24 +57,38 @@ model OrderPolicy {
 }
 
 model Address {
-  id                        String        @id @default(uuid())
-  houseNo                   String
-  mooNo                     String
-  building                  String
-  soi                       String
-  roomNo                    String
-  floorNo                   String
-  street                    String
-  subDistrictCode           String
-  subDistrictNameTh         String
-  subDistrictNameEn         String?
-  districtCode              String
-  districtNameTh            String
-  districtNameEn            String?
-  provinceCode              String
-  provinceNameTh            String
-  provinceNameEn            String?
-  zipCode                   String
-  orderPolicyCurrentAddress OrderPolicy[] @relation(name: "currentAddress")
-  orderPolicyIdCardAddress  OrderPolicy[] @relation(name: "idCardAddress")
+  id                 String        @id @default(uuid())
+  houseNo            String
+  mooNo              String
+  building           String
+  soi                String
+  roomNo             String
+  floorNo            String
+  street             String
+  subDistrictCode    String
+  subDistrictNameTh  String
+  subDistrictNameEn  String?
+  districtCode       String
+  districtNameTh     String
+  districtNameEn     String?
+  provinceCode       String
+  provinceNameTh     String
+  provinceNameEn     String?
+  zipCode            String
+  orderPolicyCurrent OrderPolicy[] @relation(name: "currentAddress")
+  orderPolicyIdCard  OrderPolicy[] @relation(name: "idCardAddress")
+}
+
+model Product {
+  id               String        @id @default(uuid())
+  code             String        @unique
+  nameTh           String
+  nameEn           String
+  minEnginSize     Int
+  maxEnginSize     Int
+  imageBase64      String
+  imageBase64En    String
+  effectiveStartAt DateTime
+  effectiveEndAt   DateTime
+  orderPolicy      OrderPolicy[] // ความสัมพันธ์ 1:M กับ OrderPolicy
 }

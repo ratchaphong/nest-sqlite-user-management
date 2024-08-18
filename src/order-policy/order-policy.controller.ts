@@ -41,10 +41,9 @@ export class OrderPolicyController {
     },
   })
   async create(
-    @Body() createOrderPolicyDto: CreateOrderPolicyDto,
+    @Body() data: CreateOrderPolicyDto,
   ): Promise<OrderPolicyResponseDTO> {
-    const createdOrder =
-      await this.orderPolicyService.create(createOrderPolicyDto);
+    const createdOrder = await this.orderPolicyService.create(data);
     return new OrderPolicyResponseDTO(createdOrder);
   }
 
